@@ -1,27 +1,27 @@
 package main
 
 import (
-	"github.com/bwmarrin/discordgo";
-	"os";
-	"github.com/joho/godotenv";
+	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 	"log"
+	"os"
 )
 
 func getEnvVariable(key string) string {
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatalf("Error loading .env file")
+		log.Fatalf("error loading .env file")
 	}
 	return os.Getenv(key)
 }
 
 var (
 	BotToken = getEnvVariable("DISCORD_AUTH_TOKEN")
-	prefix = "!"
+	prefix   = "!"
 )
 
 func main() {
-	discord,err := discordgo.New("Bot "+ BotToken)
+	discord, err := discordgo.New("Bot " + BotToken)
 	if err != nil {
 		log.Fatalf("error creating Discord session: %v", err)
 		return
@@ -55,8 +55,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			Title: "User Info",
 			Fields: []*discordgo.MessageEmbedField{
 				{
-					Name: "Username:",
-					Value: user.Username,
+					Name:   "Username:",
+					Value:  user.Username,
 					Inline: false,
 				},
 				{
@@ -70,11 +70,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					Inline: false,
 				},
 			},
-            Thumbnail: &discordgo.MessageEmbedThumbnail{
-                URL: user.AvatarURL("2048"),
-            },
+			Thumbnail: &discordgo.MessageEmbedThumbnail{
+				URL: user.AvatarURL("2048"),
+			},
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, embed)
 	}
 }
-
