@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/bwmarrin/discordgo";
 	"os";
 	"github.com/joho/godotenv";
@@ -56,7 +55,6 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 	if m.Content == prefix+"userinfo" {
-		avatarURL := constructAvatarURL(user.ID, user.Avatar)
 		embed := &discordgo.MessageEmbed{
 			Title: "User Info",
 			Fields: []*discordgo.MessageEmbedField{
@@ -77,19 +75,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				},
 			},
             Thumbnail: &discordgo.MessageEmbedThumbnail{
-                URL: avatarURL,
+                URL: user.AvatarURL("2048"),
             },
 		}
 		s.ChannelMessageSendEmbed(m.ChannelID, embed)
 	}
 }
 
-func constructAvatarURL(userID, avatarHash string) string {
-	if "avatarHash" == "" {
-		return "avatar URL error: error getting avatar"
-	}
-	return fmt.Sprintf("https://cdn.discordapp.com/avatars/%s/%s.png", userID, avatarHash)
-}
 
 func contains(slice []string, value string) bool {
 	for _, v := range slice {
