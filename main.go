@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo";
 	"os";
 	"github.com/joho/godotenv";
@@ -18,6 +19,7 @@ func getEnvVariable(key string) string {
 var (
 	BotToken = getEnvVariable("DISCORD_AUTH_TOKEN")
 	ServerIDs = []string{"1234", "5678"}
+	prefix = "!"
 )
 
 func main() {
@@ -43,12 +45,50 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-	if m.Content == "!hello" {
+	user, err := s.User(m.Author.ID)
+	if err != nil {
+		log.Printf("error retrieving user: %v", err)
+	}
+	if m.Content == prefix+"hello" {
 		_, err := s.ChannelMessageSend(m.ChannelID, "Hello, World!")
 		if err != nil {
 			log.Printf("error sending message : %v", err)
 		}
 	}
+	if m.Content == prefix+"userinfo" {
+		avatarURL := constructAvatarURL(user.ID, user.Avatar)
+		embed := &discordgo.MessageEmbed{
+			Title: "User Info",
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name: "Username:",
+					Value: user.Username,
+					Inline: false,
+				},
+				{
+					Name:   "User ID:",
+					Value:  user.ID,
+					Inline: false,
+				},
+				{
+					Name:   "Global Name:",
+					Value:  user.GlobalName,
+					Inline: false,
+				},
+			},
+            Thumbnail: &discordgo.MessageEmbedThumbnail{
+                URL: avatarURL,
+            },
+		}
+		s.ChannelMessageSendEmbed(m.ChannelID, embed)
+	}
+}
+
+func constructAvatarURL(userID, avatarHash string) string {
+	if "avatarHash" == "" {
+		return "avatar URL error: error getting avatar"
+	}
+	return fmt.Sprintf("https://cdn.discordapp.com/avatars/%s/%s.png", userID, avatarHash)
 }
 
 func contains(slice []string, value string) bool {
