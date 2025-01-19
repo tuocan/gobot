@@ -17,7 +17,6 @@ func getEnvVariable(key string) string {
 
 var (
 	BotToken = getEnvVariable("DISCORD_AUTH_TOKEN")
-	ServerIDs = []string{"1234", "5678"}
 	prefix = "!"
 )
 
@@ -38,9 +37,6 @@ func main() {
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if contains(ServerIDs, m.GuildID) {
-		return
-	}
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
@@ -82,12 +78,3 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 }
 
-
-func contains(slice []string, value string) bool {
-	for _, v := range slice {
-		if v == value {
-			return true
-		}
-	}
-	return false
-}
