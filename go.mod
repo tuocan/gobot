@@ -5,6 +5,7 @@ go 1.23.4
 require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/joho/godotenv v1.5.1
+	github.com/minoplhy/duckduckgo-images-api v1.1.1
 )
 
 require (
